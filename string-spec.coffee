@@ -89,7 +89,7 @@ class StringSpec
 
 
 
-	validationResult: (value, code= 0, found= []) ->
+	validationResult: (value, code= 0, found) ->
 		id			: @id
 		value		: value
 		code		: code
@@ -104,7 +104,7 @@ class StringSpec
 
 		if notString value
 			message.error @id, 26, 'assign'
-			return handleAlt @validationResult value, 26, [value]
+			return handleAlt @validationResult value, 26, value
 
 		validation = @validate value
 		if validation.error
@@ -117,34 +117,34 @@ class StringSpec
 
 		if notString value
 			message.error @id, 26, 'validate'
-			return @validationResult value, 26, [value]
+			return @validationResult value, 26, value
 
 		if (not @unicode) and (hasUnicode value)
-			return @validationResult value, 25
+			return @validationResult value, 25, ''
 
 		if (value.length > @max)
-			return @validationResult value, 23, [value]
+			return @validationResult value, 23, value.slice @max
 
 		if (value.length < @min)
-			return @validationResult value, 24, [value]
+			return @validationResult value, 24, ''
 
 		if @include.length
 			found = notIncludedChars value, @include
 			if found.length
-				return @validationResult value, 21, found
+				return @validationResult value, 21, found.join ''
 
 		if @exclude.length
 			found = intersection value, @exclude
 			if found.length
-				return @validationResult value, 22, found
+				return @validationResult value, 22, found.join ''
 
 		if (@regexp isnt DEFAULT_REGEXP) and not (@regexp.test value)
-			return @validationResult value, 27
+			return @validationResult value, 27, ''
 
 		if not validation = @validator value
-			return @validationResult value, 28
+			return @validationResult value, 28, ''
 
-		return @validationResult value
+		return @validationResult value, 0, ''
 
 
 

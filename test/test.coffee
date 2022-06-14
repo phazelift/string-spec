@@ -78,30 +78,9 @@ describe 'constructor initialization', ->
 		validator = new StringSpec {exclude: '?!'}
 		assert.equal validator.exclude, '?!'
 
-	it 'initializes regexp correctly', ->
-		validator = new StringSpec {regexp: /abc/}
-		validation = validator.validate 'abc'
-		assert.deepEqual validation,
-			"id": ""
-			"code": 0
-			"error": ""
-			"found": []
-			"value": "abc"
-
 	it 'initializes unicode correctly', ->
 		validator = new StringSpec {unicode: true}
 		assert.equal validator.unicode, true
-
-	it 'initializes validator correctly', ->
-		validator = new StringSpec {validator: (s) -> s is '?'}
-		validation = validator.validate '?'
-		assert.deepEqual validation,
-			"id": ""
-			"code": 0
-			"error": ""
-			"found": []
-			"value": "?"
-
 
 
 
@@ -116,7 +95,7 @@ describe '.validate functionality', ->
 			"id": "test"
 			"code": 26
 			"error": "invalid argument type"
-			"found": [undefined]
+			"found": undefined
 			"value": undefined
 
 		assert.deepEqual error,
@@ -127,6 +106,15 @@ describe '.validate functionality', ->
 			"text": "invalid argument type"
 			"type": "error"
 
+	it 'initializes validator correctly', ->
+		validator = new StringSpec {validator: (s) -> s is '?'}
+		validation = validator.validate '?'
+		assert.deepEqual validation,
+			"id": ""
+			"code": 0
+			"error": ""
+			"found": ""
+			"value": "?"
 
 	it 'should err on a string that is longer than max', ->
 		validator = new StringSpec {id: 'max test', max: 3}
@@ -134,7 +122,7 @@ describe '.validate functionality', ->
 			"id": "max test"
 			"code": 23
 			"error": "too long"
-			"found": ['jack']
+			"found": 'k'
 			"value": "jack"
 
 
@@ -144,7 +132,7 @@ describe '.validate functionality', ->
 			"id": ""
 			"code": 24
 			"error": "too short"
-			"found": ['no']
+			"found": ''
 			"value": "no"
 
 
@@ -154,7 +142,7 @@ describe '.validate functionality', ->
 			"id": ""
 			"code": 21
 			"error": "found not included character(s)"
-			"found": ["?"]
+			"found": "?"
 			"value": "abc?"
 
 
@@ -164,8 +152,19 @@ describe '.validate functionality', ->
 			"id": "exclude test"
 			"code": 22
 			"error": "found excluded character(s)"
-			"found": ["?"]
+			"found": "?"
 			"value": "abc?"
+
+
+	it 'initializes regexp correctly', ->
+		validator = new StringSpec {regexp: /abc/}
+		validation = validator.validate 'abc'
+		assert.deepEqual validation,
+			"id": ""
+			"code": 0
+			"error": ""
+			"found": ""
+			"value": "abc"
 
 
 	it 'should err on a string that doesnt match a regexp', ->
@@ -174,7 +173,7 @@ describe '.validate functionality', ->
 			"id": ""
 			"code": 27
 			"error": "regexp validation failed"
-			"found": []
+			"found": ""
 			"value": "abc?"
 
 
@@ -184,7 +183,7 @@ describe '.validate functionality', ->
 			"id": ""
 			"code": 0
 			"error": ""
-			"found": []
+			"found": ""
 			"value": "abc"
 
 
@@ -194,7 +193,7 @@ describe '.validate functionality', ->
 			"id": ""
 			"code": 25
 			"error": "contains unicode character(s)"
-			"found": []
+			"found": ""
 			"value": "c🐶a"
 
 
@@ -204,7 +203,7 @@ describe '.validate functionality', ->
 			"id": "unicode test"
 			"code": 0
 			"error": ""
-			"found": []
+			"found": ""
 			"value": "c🐶a"
 
 
@@ -215,7 +214,7 @@ describe '.validate functionality', ->
 			"id": ""
 			"code": 28
 			"error": "custom validation failed"
-			"found": []
+			"found": ""
 			"value": "?"
 
 
@@ -248,7 +247,7 @@ describe '.assign functionality', ->
 				"id": "handler test"
 				"code": 24
 				"error": "too short"
-				"found": ['fail']
+				"found": ""
 				"value": "fail"
 			return '?'
 		assert.equal result, '?'
@@ -261,7 +260,7 @@ describe '.assign functionality', ->
 				"id": "handler test"
 				"code": 26
 				"error": "invalid argument type"
-				"found": [undefined]
+				"found": undefined
 				"value": undefined
 			return '?'
 		assert.equal result, '?'

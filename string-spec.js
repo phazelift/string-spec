@@ -100,7 +100,7 @@
       return Object.freeze(this);
     }
 
-    validationResult(value, code = 0, found = []) {
+    validationResult(value, code = 0, found) {
       return {
         id: this.id,
         value: value,
@@ -123,7 +123,7 @@
 
       if (notString(value)) {
         message.error(this.id, 26, 'assign');
-        return handleAlt(this.validationResult(value, 26, [value]));
+        return handleAlt(this.validationResult(value, 26, value));
       }
 
       validation = this.validate(value);
@@ -140,26 +140,26 @@
 
       if (notString(value)) {
         message.error(this.id, 26, 'validate');
-        return this.validationResult(value, 26, [value]);
+        return this.validationResult(value, 26, value);
       }
 
       if (!this.unicode && hasUnicode(value)) {
-        return this.validationResult(value, 25);
+        return this.validationResult(value, 25, '');
       }
 
       if (value.length > this.max) {
-        return this.validationResult(value, 23, [value]);
+        return this.validationResult(value, 23, value.slice(this.max));
       }
 
       if (value.length < this.min) {
-        return this.validationResult(value, 24, [value]);
+        return this.validationResult(value, 24, '');
       }
 
       if (this.include.length) {
         found = notIncludedChars(value, this.include);
 
         if (found.length) {
-          return this.validationResult(value, 21, found);
+          return this.validationResult(value, 21, found.join(''));
         }
       }
 
@@ -167,19 +167,19 @@
         found = intersection(value, this.exclude);
 
         if (found.length) {
-          return this.validationResult(value, 22, found);
+          return this.validationResult(value, 22, found.join(''));
         }
       }
 
       if (this.regexp !== DEFAULT_REGEXP && !this.regexp.test(value)) {
-        return this.validationResult(value, 27);
+        return this.validationResult(value, 27, '');
       }
 
       if (!(validation = this.validator(value))) {
-        return this.validationResult(value, 28);
+        return this.validationResult(value, 28, '');
       }
 
-      return this.validationResult(value);
+      return this.validationResult(value, 0, '');
     }
 
   };

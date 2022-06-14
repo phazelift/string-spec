@@ -14,19 +14,15 @@ string-spec is like a type definition that is way more specific than just `let s
 
 Once you have defined a string-spec you can validate values against it, or use it to assign values. Assigning values using string-spec assures your string variables/data to always comply to the spec you've defined.
 
-Some examples
+## Usage
 ```typescript
-// have some generic set of characters
-const ALL_ALPHA_CHARACTERS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
 // create a spec that can be re-used throughout your program
 const tUsername = new StringSpec({
    id: 'username',
    min: 2,
    max: 36,
-   include: ALL_ALPHA_CHARACTERS,
+   include: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 });
-
 
 // .validate returns a result object
 const validation = tUsername.validate('bob?');
@@ -34,7 +30,7 @@ const validation = tUsername.validate('bob?');
 //    id: 'username',
 //    code: 21,
 //    error: 'found not included character(s)',
-//    found: [ '?' ]
+//    found: '?'
 //    value: 'bob?'
 // }
 
@@ -109,7 +105,7 @@ Error objects returned by the .assign and .validate methods always contain the f
 	id: string        // add an id for this StringSpec to show in error messages
 	code: number      // the error code generated (see all error codes and messages below)
 	error: string     // the error string
-	found: array      // an array with possible values that generated the error
+	found: any        // a hint of possible values that generated the error
 	value: any        // the value argument passed to .assign or .validate
 
 
@@ -153,6 +149,10 @@ const tTest = new StringSpec({ min: '2' });
 ---
 
 ## change log
+
+0.2.0
+
+- changes the .validate return values' 'found' prop, it doesn't always return an array type by default anymore, 'found' now contains the value(s) in the relevant type as found during validation, which can be any
 
 0.1.0
 
