@@ -1,6 +1,6 @@
 {
   "name": "string-spec",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A specific string type assign and validator",
   "main": "string-spec.min.js",
   "scripts": {
